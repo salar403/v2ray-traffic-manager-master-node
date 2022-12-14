@@ -28,11 +28,17 @@ class Command(BaseCommand):
             )
         )
         channel = connection.channel()
-        channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True, arguments={"x-queue-type":"stream"})
+        channel.queue_declare(
+            queue=RABBITMQ_QUEUE,
+            durable=True,
+            passive=True,
+            arguments={"x-queue-type":"stream"},
+        )
         channel.basic_qos(prefetch_count=1000)
         channel.basic_consume(queue=RABBITMQ_QUEUE, on_message_callback=self.callback)
         print("Started Consuming...")
         channel.start_consuming()
+        print("Consuming started...")
 
     def callback(self, ch, method, properties, body):
         print("Received new message")
