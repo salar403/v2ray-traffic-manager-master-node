@@ -38,7 +38,6 @@ class Command(BaseCommand):
         channel.basic_consume(queue=RABBITMQ_QUEUE, on_message_callback=self.callback)
         print("Started Consuming...")
         channel.start_consuming()
-        print("Consuming started...")
 
     def callback(self, ch, method, properties, body):
         print("Received new message")
