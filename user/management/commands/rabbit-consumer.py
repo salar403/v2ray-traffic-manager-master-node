@@ -38,5 +38,3 @@ class Command(BaseCommand):
         print("Received new message")
         data = json.loads(body)
         print(data)
-
-        
