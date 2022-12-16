@@ -7,6 +7,7 @@ from backend.environments import (
     REDIS_TRAFFIC,
     REDIS_CELERY_BACKEND,
     REDIS_CELERY_BROKER,
+    SWAGGER_URL,
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,6 +85,18 @@ CACHES = {
         },
     },
 }
+
+SWAGGER_SETTINGS = {"USE_SESSION_AUTH": False, "DEFAULT_API_URL": SWAGGER_URL}
+
+
+CELERY_BROKER_URL = (
+    f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_BROKER}"
+)
+CELERY_RESULT_BACKEND = (
+    f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CELERY_BACKEND}"
+)
+CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 31540000}
+CELERY_CREATE_MISSING_QUEUES = True
 
 
 AUTH_PASSWORD_VALIDATORS = [
