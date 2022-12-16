@@ -1,0 +1,74 @@
+version: '3.3'
+
+services:
+
+  redis-master:
+    container_name: redis-master
+    restart: always
+    image: redis:6.2.7
+    volumes:
+      - redis-master-data:/data
+    networks:
+      - master-network
+
+  postgres-master:
+    container_name: postgres-master
+    restart: always
+    image: postgres:14.4
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "postgres"
+    volumes:
+      - postgres-master-data:/var/lib/postgresql/data
+    networks:
+      - master-network
+
+  celery-main:
+    container_name: celery-main
+    build:
+      context: '.'
+      dockerfile: ./Dockerfile.celery
+    restart: always
+    command: celery -A backend worker -l info -c 2 -Q main
+    networks:
+      - master-network
+    depends_on:
+      - redis-master
+      - postgres-master
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  celery-beat:
+    container_name: celery-beat
+    build:
+      context: '.'
+      dockerfile: ./Dockerfile.backend
+    restart: always
+    command: celery -A backend beat -l info
+    depends_on:
+      - celery-main
+    networks:
+      - master-network
+
+  rabbitmq-consumer:
+    container_name: rabbitmq-consumer
+    build:
+      context: '.'
+      dockerfile: ./Dockerfile.backend
+    restart: always
+    command: ./manage.py rabbitmq-consumer
+    networks:
+      - master-network
+    depends_on:
+      - celery-main
+
+networks:
+  master-network:
+    external: True
+
+volumes:
+  redis-master-data:
+    external: True
+  postgres-master-data:
+    external: True

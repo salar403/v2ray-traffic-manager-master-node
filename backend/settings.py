@@ -1,5 +1,13 @@
 from pathlib import Path
-from backend.environments import *
+from backend.environments import (
+    REDIS_HOST,
+    REDIS_PORT,
+    REDIS_DEFAULT,
+    REDIS_CACHE_LOCK,
+    REDIS_TRAFFIC,
+    REDIS_CELERY_BACKEND,
+    REDIS_CELERY_BROKER,
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -64,6 +72,13 @@ CACHES = {
     "traffic": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_TRAFFIC}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+    "cache_lock": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_CACHE_LOCK}",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },

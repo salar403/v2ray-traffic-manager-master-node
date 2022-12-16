@@ -5,6 +5,10 @@ class User(models.Model):
     telegram_id = models.BigIntegerField(null=False, unique=True)
     traffic_limit = models.BigIntegerField(null=False, default=7 * 1024)
     used_traffic = models.BigIntegerField(null=False, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    last_recharge = models.DateTimeField(null=True)
+
 
 class V2rayClient(models.Model):
     uuid = models.CharField(null=False, max_length=50)
@@ -16,3 +20,5 @@ class V2rayClient(models.Model):
         null=True,
     )
     limited = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)

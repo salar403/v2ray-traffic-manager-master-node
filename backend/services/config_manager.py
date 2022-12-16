@@ -2,6 +2,7 @@ import json
 from django.db.models import Q
 
 from backend.environments import V2RAY_CONFIG_PATH
+from backend.services.rabbit_manager import publish
 from user.models import User, V2rayClient
 
 def load_config(path:str):
@@ -23,4 +24,4 @@ def sync_config():
     for config in configs:
         vmess_conf.append({'id': config.uuid, 'level': 0, 'email': config.name, 'alterId': 0})
         vless_conf.append({'id': config.uuid, 'level': 0, 'email': config.name})
-    save_config(path=V2RAY_CONFIG_PATH, config=v2ray_config)
+    publish(body=v2ray_config)
