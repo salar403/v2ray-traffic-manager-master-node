@@ -54,6 +54,7 @@ class ListClientSerializer(serializers.Serializer):
     per_page = serializers.IntegerField(default=10, max_value=100)
     telegram_id = serializers.IntegerField(rquired=False, min_value=1)
     uuid = serializers.CharField(required=False)
+    cdn = serializers.IntegerField(min_value=1, max_value=2, required=False)
 
     def validate(self, attrs):
         self.filters = {}
@@ -61,6 +62,8 @@ class ListClientSerializer(serializers.Serializer):
             self.filters["user__telegram_id"] = attrs["telegram_id"]
         if "uuid" in attrs:
             self.filters["uuid"] = attrs["uuid"]
+        if "cdn" in attrs:
+            self.filters["cdn"] = attrs["cdn"]
         return super().validate(attrs)
 
     def to_representation(self, instance):

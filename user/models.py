@@ -11,6 +11,12 @@ class User(models.Model):
 
 
 class V2rayClient(models.Model):
+    DRAK = 1
+    CLOUDFLARE = 2
+    CDNS = [
+        (DRAK, "DRAK"),
+        (DRAK, "CLOUDFLARE"),
+    ]
     uuid = models.CharField(null=False, max_length=50)
     name = models.CharField(max_length=1000, null=False)
     user = models.OneToOneField(
@@ -19,6 +25,7 @@ class V2rayClient(models.Model):
         related_name="config",
         null=True,
     )
+    cdn = models.integer(choices=CDNS, null=False)
     limited = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
